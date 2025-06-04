@@ -49,7 +49,11 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
-
+		<dependency>
+			<groupId>com.vladmihalcea</groupId>
+			<artifactId>hibernate-types-60</artifactId> <!-- Use hibernate-types-6x for Hibernate 6+ -->
+			<version>2.21.1</version> <!-- Use latest available -->
+		</dependency>
 		<!-- Spring Boot Actuator -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
