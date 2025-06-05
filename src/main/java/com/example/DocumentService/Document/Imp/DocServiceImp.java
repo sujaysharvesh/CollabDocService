@@ -46,7 +46,7 @@ public class DocServiceImp implements DocService {
     }
 
     @Override
-    public List<UserDocumentsDTO> getUserDocument(UUID ownerId) {
+    public List<UserDocumentsDTO> getUserAllDocuments(UUID ownerId) {
         List<Document> userDocuments = docRepository.findByOwnerId(ownerId);
         return userDocuments.stream()
                 .map(document ->
@@ -56,9 +56,20 @@ public class DocServiceImp implements DocService {
     }
 
     @Override
-    public List<DocumentResponseDTO> getAllDocumentsByUserId(String userId) {
-        return List.of();
+    public DocumentResponseDTO getUserDocument(UUID docId, UUID ownerId) {
+        Document document = docRepository.findByIdAndOwnerId(docId, ownerId)
+                .orElseThrow(() -> new DocumentNotFoundException("Document not found or you do not have permission to access it."));
+        return docMapper.toDocumentResponseDTO(document);
     }
+
+    @Override
+    public void deleteDocument(UUID docId, UUID ownerId) {
+        canUserAccessDocument(docId, ownerId);
+        Document document = docRepository.findById(docId)
+                .orElseThrow(() -> new DocumentNotFoundException("Document not found"));
+        docRepository.delete(document);
+    }
+
 
     public void canUserAccessDocument(UUID docId, UUID userId) {
         if (!docRepository.existsByIdAndOwnerId(docId, userId))

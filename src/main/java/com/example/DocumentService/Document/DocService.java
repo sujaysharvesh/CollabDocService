@@ -12,6 +12,7 @@ public interface DocService {
 
     DocumentResponseDTO createDocument(CreateDocumentDTO createDocumentDTO);
     DocumentResponseDTO updateDocument(UpdateDocumentDTO updateDocumentDTO);
-    List<UserDocumentsDTO> getUserDocument(UUID ownerId);
-    List<DocumentResponseDTO> getAllDocumentsByUserId(String userId);
+    List<UserDocumentsDTO> getUserAllDocuments(UUID ownerId);
+    DocumentResponseDTO getUserDocument(UUID docId, UUID ownerId);
+    void deleteDocument(UUID docId, UUID ownerId) ;
 }
