@@ -1,5 +1,6 @@
 package com.example.DocumentService.DocumentDTO;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,13 +8,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Builder
-public class UpdateDocumentDTO {
-    private UUID docId;
-    private UUID ownerId;
+public class UserDocumentsDTO {
     private String title;
-    private Object content;
+    private UUID docId;
 }

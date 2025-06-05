@@ -17,7 +17,7 @@ import java.util.UUID;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    public class DocumentNotFoundException extends RuntimeException {
+    public static class DocumentNotFoundException extends RuntimeException {
         public DocumentNotFoundException(String message) {
             super(message);
         }
@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
         }
     }
 
-    public class DocumentAccessDeniedException extends RuntimeException {
+    public static class DocumentAccessDeniedException extends RuntimeException {
         public DocumentAccessDeniedException(String message) {
             super(message);
         }
