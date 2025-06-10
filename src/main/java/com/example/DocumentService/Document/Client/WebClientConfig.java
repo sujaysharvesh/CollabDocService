@@ -1,30 +1,33 @@
 package com.example.DocumentService.Document.Client;
 
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-@EnableConfigurationProperties(UserServiceConfig.class)
+@EnableConfigurationProperties(UserServiceProperties.class)
 @Configuration
 @Slf4j
 public class WebClientConfig {
 
     @Bean
     @LoadBalanced
+    @Qualifier("userWebClient")
     public WebClient userServiceWebClient(UserServiceProperties properties) {
         return WebClient.builder()
                 .baseUrl(properties.getBaseUrl())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .defaultCookie(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .filter(logRequest())
+                .filter(logResponse())
                 .build();
     }
 
@@ -39,7 +42,7 @@ public class WebClientConfig {
 
     private ExchangeFilterFunction logResponse() {
         return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
-            log.info("Response: {}", clientResponse);
+            log.info("Response: {}", clientResponse.statusCode());
             return Mono.just(clientResponse);
         });
     }
@@ -47,8 +50,9 @@ public class WebClientConfig {
     private ExchangeFilterFunction errorHandlingFilter() {
         return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
             if(clientResponse.statusCode().is4xxClientError() ||
-               clientResponse.statusCode().is5xxServerError()) {
+                    clientResponse.statusCode().is5xxServerError()) {
                 return clientResponse.bodyToMono(String.class)
+                        .defaultIfEmpty("Unknown error")
                         .flatMap(errorBody -> {
                             log.error("Error response: {} - {}", clientResponse.statusCode(), errorBody);
                             return Mono.error(new RuntimeException("Error response: " + errorBody));
@@ -57,5 +61,4 @@ public class WebClientConfig {
             return Mono.just(clientResponse);
         });
     }
-
 }

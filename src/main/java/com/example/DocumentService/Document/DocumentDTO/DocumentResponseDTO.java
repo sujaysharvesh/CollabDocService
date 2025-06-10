@@ -1,5 +1,6 @@
-package com.example.DocumentService.DocumentDTO;
+package com.example.DocumentService.Document.DocumentDTO;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DocumentResponseDTO {
     private UUID id;
     private String title;

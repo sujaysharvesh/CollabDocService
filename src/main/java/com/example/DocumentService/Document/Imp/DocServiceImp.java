@@ -5,10 +5,10 @@ import com.example.DocumentService.Document.DocRepository;
 import com.example.DocumentService.Document.Document;
 import com.example.DocumentService.Document.DocService;
 import com.example.DocumentService.Document.Exceptionhandler.GlobalExceptionHandler.*;
-import com.example.DocumentService.DocumentDTO.CreateDocumentDTO;
-import com.example.DocumentService.DocumentDTO.DocumentResponseDTO;
-import com.example.DocumentService.DocumentDTO.UpdateDocumentDTO;
-import com.example.DocumentService.DocumentDTO.UserDocumentsDTO;
+import com.example.DocumentService.Document.DocumentDTO.CreateDocumentDTO;
+import com.example.DocumentService.Document.DocumentDTO.DocumentResponseDTO;
+import com.example.DocumentService.Document.DocumentDTO.UpdateDocumentDTO;
+import com.example.DocumentService.Document.DocumentDTO.UserDocumentsDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package com.example.DocumentService.Document;
 
 
-import com.example.DocumentService.DocumentDTO.DocumentResponseDTO;
+import com.example.DocumentService.Document.DocumentDTO.DocumentResponseDTO;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,4 +1,4 @@
-package com.example.DocumentService.DocumentDTO;
+package com.example.DocumentService.Document.DocumentDTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -14,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class CreateDocumentDTO {
 
     @NotBlank(message = "Title is required")

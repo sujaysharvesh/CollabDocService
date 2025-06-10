@@ -1,4 +1,4 @@
-package com.example.DocumentService.DocumentDTO;
+package com.example.DocumentService.Document.DocumentDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

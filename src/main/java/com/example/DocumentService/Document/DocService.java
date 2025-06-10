@@ -1,9 +1,9 @@
 package com.example.DocumentService.Document;
 
-import com.example.DocumentService.DocumentDTO.CreateDocumentDTO;
-import com.example.DocumentService.DocumentDTO.DocumentResponseDTO;
-import com.example.DocumentService.DocumentDTO.UpdateDocumentDTO;
-import com.example.DocumentService.DocumentDTO.UserDocumentsDTO;
+import com.example.DocumentService.Document.DocumentDTO.CreateDocumentDTO;
+import com.example.DocumentService.Document.DocumentDTO.DocumentResponseDTO;
+import com.example.DocumentService.Document.DocumentDTO.UpdateDocumentDTO;
+import com.example.DocumentService.Document.DocumentDTO.UserDocumentsDTO;
 
 import java.util.List;
 import java.util.UUID;
