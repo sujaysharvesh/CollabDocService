@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -18,15 +18,15 @@ import java.util.UUID;
 public class DocumentResponseDTO {
     private UUID id;
     private String title;
-    private Object content;
+    private byte[] content;
     private Integer version;
 
     @JsonProperty("owner_id")
     private UUID ownerId;
 
     @JsonProperty("created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @JsonProperty("updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 }

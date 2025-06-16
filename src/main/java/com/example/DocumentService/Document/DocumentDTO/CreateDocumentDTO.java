@@ -21,7 +21,7 @@ public class CreateDocumentDTO {
     private String title;
 
     @NotNull(message = "Content is required")
-    private Object content;
+    private byte[] content;
 
     @NotNull(message = "Owner ID is required")
     @JsonProperty("owner_id")

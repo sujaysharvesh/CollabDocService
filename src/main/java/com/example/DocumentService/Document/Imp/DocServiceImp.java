@@ -4,11 +4,8 @@ import com.example.DocumentService.Document.DocMapper;
 import com.example.DocumentService.Document.DocRepository;
 import com.example.DocumentService.Document.Document;
 import com.example.DocumentService.Document.DocService;
+import com.example.DocumentService.Document.DocumentDTO.*;
 import com.example.DocumentService.Document.Exceptionhandler.GlobalExceptionHandler.*;
-import com.example.DocumentService.Document.DocumentDTO.CreateDocumentDTO;
-import com.example.DocumentService.Document.DocumentDTO.DocumentResponseDTO;
-import com.example.DocumentService.Document.DocumentDTO.UpdateDocumentDTO;
-import com.example.DocumentService.Document.DocumentDTO.UserDocumentsDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -68,6 +65,18 @@ public class DocServiceImp implements DocService {
         Document document = docRepository.findById(docId)
                 .orElseThrow(() -> new DocumentNotFoundException("Document not found"));
         docRepository.delete(document);
+    }
+
+    @Override
+    public void updateDocumentContent(DocumentSaveEvent documentSaveEvent) {
+        UUID userId = UUID.fromString(documentSaveEvent.getUserId());
+        UUID documentId = UUID.fromString(documentSaveEvent.getDocumentId());
+        canUserAccessDocument(documentId, userId);
+        Document document = docRepository.findById(documentId)
+                .orElseThrow(() -> new DocumentNotFoundException("Document not found"));
+        document.setUpdatedAt(documentSaveEvent.getTimestamp());
+        document.setContent(documentSaveEvent.getContent());
+        docRepository.save(document);
     }
 
 

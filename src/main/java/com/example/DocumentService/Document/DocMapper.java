@@ -4,6 +4,8 @@ package com.example.DocumentService.Document;
 import com.example.DocumentService.Document.DocumentDTO.DocumentResponseDTO;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+
 @Component
 public class DocMapper {
 
@@ -16,7 +18,7 @@ public class DocMapper {
                 .id(document.getId())
                 .title(document.getTitle())
                 .content(document.getContent())
-                .createdAt(document.getCreatedAt())
+                .createdAt(Instant.ofEpochSecond(document.getCreatedAt()))
                 .updatedAt(document.getUpdatedAt())
                 .ownerId(document.getOwnerId())
                 .build();

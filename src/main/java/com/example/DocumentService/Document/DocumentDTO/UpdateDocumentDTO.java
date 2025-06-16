@@ -15,5 +15,5 @@ public class UpdateDocumentDTO {
     private UUID docId;
     private UUID ownerId;
     private String title;
-    private Object content;
+    private byte[] content;
 }

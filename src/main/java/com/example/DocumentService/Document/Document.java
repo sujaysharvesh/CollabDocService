@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Type;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -25,9 +26,8 @@ public class Document {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "content", columnDefinition = "jsonb")
-    @Type(JsonBinaryType.class)
-    private Object content;
+    @Lob
+    private byte[] content;
 
     @Column(name = "version")
     @Builder.Default
@@ -38,9 +38,9 @@ public class Document {
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private Integer createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 }
