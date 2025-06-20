@@ -6,26 +6,29 @@ import com.example.DocumentService.Document.Document;
 import com.example.DocumentService.Document.DocService;
 import com.example.DocumentService.Document.DocumentDTO.*;
 import com.example.DocumentService.Document.Exceptionhandler.GlobalExceptionHandler.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class DocServiceImp implements DocService {
 
     private final DocRepository docRepository;
     private final DocMapper docMapper;
 
     @Override
-    public DocumentResponseDTO createDocument(CreateDocumentDTO createDocumentDTO) {
+    public DocumentResponseDTO createDocument(CreateDocumentDTO createDocumentDTO, UUID userId) {
         Document document = Document.builder()
                 .title(createDocumentDTO.getTitle())
                 .content(createDocumentDTO.getContent())
-                .ownerId(createDocumentDTO.getOwnerId())
+                .ownerId(userId)
                 .build();
         Document newDoc = docRepository.save(document);
         return docMapper.toDocumentResponseDTO(newDoc);
@@ -74,6 +77,7 @@ public class DocServiceImp implements DocService {
         canUserAccessDocument(documentId, userId);
         Document document = docRepository.findById(documentId)
                 .orElseThrow(() -> new DocumentNotFoundException("Document not found"));
+        document.setTitle(documentSaveEvent.getTitle());
         document.setUpdatedAt(documentSaveEvent.getTimestamp());
         document.setContent(documentSaveEvent.getContent());
         docRepository.save(document);

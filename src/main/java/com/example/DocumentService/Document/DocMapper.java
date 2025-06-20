@@ -18,7 +18,7 @@ public class DocMapper {
                 .id(document.getId())
                 .title(document.getTitle())
                 .content(document.getContent())
-                .createdAt(Instant.ofEpochSecond(document.getCreatedAt()))
+                .createdAt(Instant.now())
                 .updatedAt(document.getUpdatedAt())
                 .ownerId(document.getOwnerId())
                 .build();

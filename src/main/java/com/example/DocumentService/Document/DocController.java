@@ -2,10 +2,8 @@ package com.example.DocumentService.Document;
 
 
 import com.example.DocumentService.Document.Client.UserServiceClient;
+import com.example.DocumentService.Document.DocumentDTO.*;
 import com.example.DocumentService.Document.Exceptionhandler.GlobalExceptionHandler.*;
-import com.example.DocumentService.Document.DocumentDTO.CreateDocumentDTO;
-import com.example.DocumentService.Document.DocumentDTO.DocumentResponseDTO;
-import com.example.DocumentService.Document.DocumentDTO.UpdateDocumentDTO;
 import com.example.DocumentService.UserDTO.UserInfoDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -32,6 +31,31 @@ public class DocController {
     public String home() {
         return "Welcome to the Document Service!";
     }
+
+    @GetMapping
+    public Mono<ResponseEntity<ApiResponse<DocumentResponseDTO>>> userDocument(@RequestBody RequestUserDocument requestUserDocument,
+                                                                               @RequestHeader("Authorization") String token) {
+        return userServiceClient.getUserInfo(token)
+                .map(userInfoDTO -> {
+                    DocumentResponseDTO documentResponseDTO = docService.getUserDocument(requestUserDocument.getDocumentId(), userInfoDTO.getUserId());
+                    ApiResponse<DocumentResponseDTO> response = ApiResponse.success("Document retrieved successfully", documentResponseDTO);
+                    return ResponseEntity.ok(response);
+                })
+                .onErrorResume(DocumentNotFoundException.class, ex -> {
+                    ApiResponse<DocumentResponseDTO> response = ApiResponse.error("Document not found: " + ex.getMessage());
+                    return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).body(response));
+                })
+                .onErrorResume(DocumentAccessDeniedException.class, ex -> {
+                    ApiResponse<DocumentResponseDTO> response = ApiResponse.error("Access denied: " + ex.getMessage());
+                    return Mono.just(ResponseEntity.status(HttpStatus.FORBIDDEN).body(response));
+                })
+                .onErrorResume(Exception.class, ex -> {
+                    ApiResponse<DocumentResponseDTO> response = ApiResponse.error("Failed to retrieve document: " + ex.getMessage());
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response));
+                });
+    }
+    
+    
 
     @GetMapping("/currentUser")
     public Mono<ResponseEntity<ApiResponse<UserInfoDTO>>> currentUser(@RequestHeader("Authorization") String token) {
@@ -66,23 +90,23 @@ public class DocController {
                 });
     }
 
-//    @GetMapping("/all")
-//    public Mono<ResponseEntity<ApiResponse<List<UserDocumentsDTO>>>> userAllDocuments(@RequestHeader("Authorization") String token) {
-//        validateToken(token);
-//        return userServiceClient.getUserInfo(token).flatMap(
-//                userInfoDTO -> {
-//                List<UserDocumentsDTO> userDocuments = docService.getUserAllDocuments(userInfoDTO.getUserId());
-//                ApiResponse<List<UserDocumentsDTO>> response = ApiResponse.success("User documents retrieved successfully", userDocuments);
-//                return ResponseEntity.ok(response);
-//                })
-//                .onErrorResume(Exception.class) {;
-//                    log.error("Error retrieving user documents: {}", ex.getMessage());
-//                    ApiResponse<List<UserDocumentsDTO>> response = ApiResponse.error("Failed to retrieve user documents: " + ex.getMessage());
-//                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response));
-//                });
-//    }
+    @GetMapping("/all")
+    public Mono<ResponseEntity<ApiResponse<List<UserDocumentsDTO>>>> userAllDocuments(@RequestHeader("Authorization") String token) {
+        validateToken(token);
+        return userServiceClient.getUserInfo(token).flatMap(
+                userInfoDTO -> {
+                List<UserDocumentsDTO> userDocuments = docService.getUserAllDocuments(userInfoDTO.getUserId());
+                    ApiResponse<List<UserDocumentsDTO>> response = ApiResponse.success("User documents retrieved successfully", userDocuments);
+                return Mono.just(ResponseEntity.ok(response));
+                })
+                .onErrorResume(Exception.class, ex -> {
+                    log.error("Error retrieving user documents: {}", ex.getMessage());
+                    ApiResponse<List<UserDocumentsDTO>> response = ApiResponse.error("Failed to retrieve user documents: " + ex.getMessage());
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response));
+                });
+    }
 
-    @PostMapping("/create")
+    @PostMapping
     public Mono<ResponseEntity<ApiResponse<DocumentResponseDTO>>> createDocument(@RequestHeader("Authorization") String token,
                                                                                  @Valid @RequestBody CreateDocumentDTO createDocumentDTO) {
 
@@ -94,8 +118,7 @@ public class DocController {
                         .body(ApiResponse.error("Authentication token is missing or invalid")));
             }
             return userServiceClient.getUserInfo(token).map(userInfoDTO -> {
-                        createDocumentDTO.setOwnerId(userInfoDTO.getUserId());
-                        DocumentResponseDTO documentResponseDTO = docService.createDocument(createDocumentDTO);
+                        DocumentResponseDTO documentResponseDTO = docService.createDocument(createDocumentDTO, userInfoDTO.getUserId());
                         ApiResponse<DocumentResponseDTO> response = ApiResponse
                                 .success("Document created successfully", documentResponseDTO);
                         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -129,33 +152,8 @@ public class DocController {
         }
 
     }
-
-    @GetMapping("/get/{docId}")
-    public Mono<ResponseEntity<ApiResponse<DocumentResponseDTO>>> userDocument(@PathVariable UUID docId,
-                                                                               @RequestBody UUID ownerId,
-                                                                               @RequestHeader("Authorization") String token) {
-        return userServiceClient.getUserInfo(token)
-                .map(userInfoDTO -> {
-                    DocumentResponseDTO documentResponseDTO = docService.getUserDocument(docId, userInfoDTO.getUserId());
-                    ApiResponse<DocumentResponseDTO> response = ApiResponse.success("Document retrieved successfully", documentResponseDTO);
-                    return ResponseEntity.ok(response);
-                })
-                .onErrorResume(DocumentNotFoundException.class, ex -> {
-                    ApiResponse<DocumentResponseDTO> response = ApiResponse.error("Document not found: " + ex.getMessage());
-                    return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).body(response));
-                })
-                .onErrorResume(DocumentAccessDeniedException.class, ex -> {
-                    ApiResponse<DocumentResponseDTO> response = ApiResponse.error("Access denied: " + ex.getMessage());
-                    return Mono.just(ResponseEntity.status(HttpStatus.FORBIDDEN).body(response));
-                })
-                .onErrorResume(Exception.class, ex -> {
-                    ApiResponse<DocumentResponseDTO> response = ApiResponse.error("Failed to retrieve document: " + ex.getMessage());
-                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response));
-                });
-    }
-
-
-    @PutMapping("/update/{docId}")
+    
+    @PatchMapping
     public Mono<ResponseEntity<ApiResponse<DocumentResponseDTO>>> updateResponse(@Valid @RequestBody
                                                                                      UpdateDocumentDTO updateDocumentDTO,
                                                                                  @RequestHeader("Authorization") String token) {
@@ -179,11 +177,13 @@ public class DocController {
                 });
     }
 
-    @DeleteMapping("/delete/{docId}")
-    public ResponseEntity<ApiResponse<String>> deleteDocument(@PathVariable UUID docId, @RequestBody UUID ownerId) {
-        docService.deleteDocument(docId, ownerId);
-        ApiResponse<String> response = ApiResponse.success("Document deleted successfully", "Document with ID " + docId + " has been deleted.");
-        return ResponseEntity.ok(response);
+    @DeleteMapping
+    public Mono<ResponseEntity<ApiResponse<String>>> deleteDocument(@RequestHeader("Authorization") String token, @PathVariable UUID docId) {
+        return userServiceClient.getUserInfo(token).map(userInfoDTO -> {
+           docService.deleteDocument(docId, userInfoDTO.getUserId());
+           ApiResponse<String> response = ApiResponse.success("Document Deleted Succussfully");
+           return ResponseEntity.ok(response);
+        });
     }
 
     private String validateToken(String token) {

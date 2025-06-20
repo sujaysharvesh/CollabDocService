@@ -14,6 +14,7 @@ import java.util.UUID;
 @Setter
 public class DocumentSaveEvent {
     private String documentId;
+    private String title;
     private String userId;
     private byte[] content;
     private Instant timestamp;

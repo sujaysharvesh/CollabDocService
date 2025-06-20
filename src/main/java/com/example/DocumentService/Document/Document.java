@@ -38,7 +38,7 @@ public class Document {
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private Integer createdAt;
+    private Instant createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")

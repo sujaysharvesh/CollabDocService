@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface DocService {
 
-    DocumentResponseDTO createDocument(CreateDocumentDTO createDocumentDTO);
+    DocumentResponseDTO createDocument(CreateDocumentDTO createDocumentDTO, UUID userId);
     DocumentResponseDTO updateDocument(UpdateDocumentDTO updateDocumentDTO);
     List<UserDocumentsDTO> getUserAllDocuments(UUID ownerId);
     DocumentResponseDTO getUserDocument(UUID docId, UUID ownerId);
