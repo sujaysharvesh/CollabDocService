@@ -14,5 +14,5 @@ import java.util.UUID;
 @Builder
 public class UserDocumentsDTO {
     private String title;
-    private UUID docId;
+    private UUID Id;
 }

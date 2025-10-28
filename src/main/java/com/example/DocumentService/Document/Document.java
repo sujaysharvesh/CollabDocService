@@ -1,5 +1,7 @@
 package com.example.DocumentService.Document;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.impl.IndexedListSerializer;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,6 +40,7 @@ public class Document {
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
+    @JsonSerialize(using = IndexedListSerializer.class)
     private Instant createdAt;
 
     @UpdateTimestamp

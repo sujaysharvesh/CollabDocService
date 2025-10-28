@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -16,17 +17,12 @@ import java.util.UUID;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DocumentResponseDTO {
-    private UUID id;
-    private String title;
+
+    private String documentId;
+
     private byte[] content;
-    private Integer version;
-
-    @JsonProperty("owner_id")
-    private UUID ownerId;
-
-    @JsonProperty("created_at")
-    private Instant createdAt;
 
     @JsonProperty("updated_at")
     private Instant updatedAt;
+
 }

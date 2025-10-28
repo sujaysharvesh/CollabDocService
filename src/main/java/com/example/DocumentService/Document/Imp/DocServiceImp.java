@@ -51,7 +51,7 @@ public class DocServiceImp implements DocService {
         return userDocuments.stream()
                 .map(document ->
                         UserDocumentsDTO.builder()
-                                .docId(document.getId())
+                                .Id(document.getId())
                                 .title(document.getTitle()).build()).toList();
     }
 

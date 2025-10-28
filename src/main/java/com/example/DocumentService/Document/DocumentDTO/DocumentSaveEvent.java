@@ -4,6 +4,7 @@ package com.example.DocumentService.Document.DocumentDTO;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 @NoArgsConstructor

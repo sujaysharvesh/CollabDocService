@@ -17,10 +17,8 @@ import java.util.UUID;
 
 public class CreateDocumentDTO {
 
-    @NotBlank(message = "Title is required")
     private String title;
 
-    @NotNull(message = "Content is required")
     private byte[] content;
 
 }
