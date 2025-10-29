@@ -57,7 +57,7 @@ public class DocController {
     @GetMapping("/{documentId}")
     public Mono<ResponseEntity<ApiResponse<DocumentResponseDTO>>> userDocument(@PathVariable UUID documentId,
                                                                                @RequestHeader("Authorization") String token) {
-        return userServiceClient.getUserInfo(token)
+                return userServiceClient.getUserInfo(token)
                 .map(userInfoDTO -> {
                     DocumentResponseDTO documentResponseDTO = docService.getUserDocument(documentId, userInfoDTO.getUserId());
                     ApiResponse<DocumentResponseDTO> response = ApiResponse.success("Document retrieved successfully", documentResponseDTO);
