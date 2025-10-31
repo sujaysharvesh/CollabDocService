@@ -20,6 +20,8 @@ public class DocumentResponseDTO {
 
     private String documentId;
 
+    private String title;
+
     private byte[] content;
 
     @JsonProperty("updated_at")

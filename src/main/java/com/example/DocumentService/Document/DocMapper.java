@@ -16,6 +16,7 @@ public class DocMapper {
 
         DocumentResponseDTO response = DocumentResponseDTO.builder()
                 .documentId(document.getId().toString())
+                .title(document.getTitle())
                 .content(document.getContent())
                 .updatedAt(document.getUpdatedAt())
                 .build();
